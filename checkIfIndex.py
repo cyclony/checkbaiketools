@@ -7,8 +7,9 @@ import os
 
 xl_files = [file for file in os.listdir() if (file.endswith('xlsx') or file.endswith('xls')) and file.find('result_')< 0]
 
-url_prex = 'https://www.sogou.com/web?query=http%3A%2F%2Fbaike.sogou.com%2Fv'
-
+url_prex = 'https://www.sogou.com/web?query='
+query_newform = 'http://baike.sogou.com/v{id}.htm?fromTitle={name}'
+query_oldform = 'http://baike.sogou.com/v{id}.htm'
 prg_size = 0  # init size
 prg_i = 0
 
@@ -56,10 +57,12 @@ def checkIfIndex_byurl(url):
 
 
 def encodeURL_newform(row):
-    return url_prex + str(row.ID) + '.htm?fromTitle=' + urllib.parse.quote(row.词条名)
+    encode_query = urllib.parse.quote_plus(query_newform.format(id = row.ID, name = urllib.parse.quote(str(row.词条名))))
+    return url_prex + encode_query
 
 def encodeURL_oldform(row):
-    return url_prex + str(row.ID) + '.htm'
+    encode_query = urllib.parse.quote_plus(query_oldform.format(id = row.ID))
+    return url_prex + encode_query
 
 
 @progress_print_decorator
